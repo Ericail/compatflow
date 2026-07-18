@@ -1,0 +1,84 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "vllm_16340_affected_083",
+  "trace_id": "vllm_16340_affected_083",
+  "description": "vLLM 0.8.3 reproduction candidate for the first streamed tool delta missing type=function.",
+  "endpoint": "http://127.0.0.1:8000/v1/chat/completions",
+  "server": {
+    "implementation": "vllm",
+    "version": "0.8.3",
+    "model": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "image": "vllm/vllm-openai:v0.8.3",
+    "source_ref": "v0.8.3",
+    "version_evidence": "Docker tag plus collect_env.py output must be retained with the capture.",
+    "launch_command": [
+      "docker",
+      "run",
+      "--gpus=all",
+      "--rm",
+      "-p",
+      "8000:8000",
+      "vllm/vllm-openai:v0.8.3",
+      "--model",
+      "Qwen/Qwen2.5-7B-Instruct-AWQ",
+      "--quantization",
+      "awq",
+      "--enable-auto-tool-choice",
+      "--tool-call-parser",
+      "hermes"
+    ]
+  },
+  "request": {
+    "model": "Qwen/Qwen2.5-7B-Instruct-AWQ",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Call get_current_weather with location exactly Boston, MA and unit exactly celsius."
+      }
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "get_current_weather",
+          "description": "Get current weather for one location.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "location": {"type": "string"},
+              "unit": {"type": "string", "enum": ["celsius", "fahrenheit"]}
+            },
+            "required": ["location", "unit"]
+          }
+        }
+      }
+    ],
+    "tool_choice": {
+      "type": "function",
+      "function": {"name": "get_current_weather"}
+    },
+    "temperature": 0,
+    "stream": true
+  },
+  "ground_truth": {
+    "tool_calls": [
+      {
+        "index": 0,
+        "call_id": null,
+        "call_id_policy": "present",
+        "name": "get_current_weather",
+        "arguments": {"location": "Boston, MA", "unit": "celsius"}
+      }
+    ],
+    "finish_reason": "tool_calls"
+  },
+  "expectation": {
+    "outcome": "compatible",
+    "issue_codes": [],
+    "reference": "https://github.com/vllm-project/vllm/issues/16340"
+  },
+  "wire_expectation": {
+    "outcome": "noncompliant",
+    "issue_codes": ["missing_tool_call_type"]
+  }
+}
