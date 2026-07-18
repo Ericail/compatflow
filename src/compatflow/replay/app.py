@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from compatflow import __version__
 from compatflow.replay.models import Trace
 from compatflow.replay.sse import encode_event
-from compatflow.replay.store import TraceNotFoundError, TraceStore
+from compatflow.replay.store import TraceNotFoundError, TraceRepository, TraceStore
 
 
 def _default_corpus_dir() -> Path:
@@ -53,16 +53,22 @@ async def _replay(trace: Trace) -> AsyncIterator[bytes]:
         yield encode_event(event)
 
 
-def create_app(corpus_dir: Path | None = None) -> FastAPI:
+def create_app(
+    corpus_dir: Path | None = None,
+    *,
+    store: TraceRepository | None = None,
+) -> FastAPI:
     """Create a replay app bound to one validated corpus directory."""
 
-    store = TraceStore(corpus_dir or _default_corpus_dir())
+    if corpus_dir is not None and store is not None:
+        raise ValueError("provide corpus_dir or store, not both")
+    trace_store = store or TraceStore(corpus_dir or _default_corpus_dir())
     app = FastAPI(title="CompatFlow Replay Server", version=__version__)
-    app.state.trace_store = store
+    app.state.trace_store = trace_store
 
     @app.get("/healthz")
     async def health() -> dict[str, Any]:
-        return {"status": "ok", "traces": len(store.list()), "version": __version__}
+        return {"status": "ok", "traces": len(trace_store.list()), "version": __version__}
 
     @app.get("/v1/models")
     async def models() -> dict[str, Any]:
@@ -75,7 +81,7 @@ def create_app(corpus_dir: Path | None = None) -> FastAPI:
                     "created": 0,
                     "owned_by": "compatflow",
                 }
-                for trace in store.list()
+                for trace in trace_store.list()
             ],
         }
 
@@ -91,8 +97,9 @@ def create_app(corpus_dir: Path | None = None) -> FastAPI:
                     "provenance": (
                         trace.provenance.model_dump() if trace.provenance is not None else None
                     ),
+                    "expectation": trace.expectation.model_dump(),
                 }
-                for trace in store.list()
+                for trace in trace_store.list()
             ]
         }
 
@@ -118,7 +125,7 @@ def create_app(corpus_dir: Path | None = None) -> FastAPI:
                 param="model",
             )
         try:
-            trace = store.get(trace_id)
+            trace = trace_store.get(trace_id)
         except TraceNotFoundError:
             return _error(f"unknown trace: {trace_id}", status_code=404, param="model")
 
