@@ -63,14 +63,15 @@ class ToolCallAccumulator:
     def add(
         self,
         *,
-        index: int,
+        index: int | None,
         call_id: str | None,
         name: str | None,
         arguments: str | None,
     ) -> None:
+        if not isinstance(index, int) or isinstance(index, bool) or index < 0:
+            raise ValueError("tool-call delta is missing a non-negative integer index")
         partial = self._calls.setdefault(index, _PartialToolCall(index=index))
         partial.add(call_id=call_id, name=name, arguments=arguments)
 
     def build(self) -> list[ObservedToolCall]:
         return [self._calls[index].build() for index in sorted(self._calls)]
-
