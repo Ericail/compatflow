@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0",
+  "trace_id": "defect_raw_tool_call_content",
+  "description": "Known vLLM-class seed: a tool call is emitted as raw tagged content with finish_reason=stop.",
+  "events": [
+    {
+      "data": {
+        "id": "chatcmpl-defect-004",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/defect_raw_tool_call_content",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "content": "<tool_call>{\"name\":\"get_weather\",\"arguments\":{\"city\":\"上海\"}}</tool_call>"
+            },
+            "finish_reason": "stop"
+          }
+        ]
+      }
+    },
+    {"data": "[DONE]"}
+  ],
+  "ground_truth": {
+    "tool_calls": [
+      {
+        "index": 0,
+        "call_id": "call_defect_004",
+        "name": "get_weather",
+        "arguments": {"city": "上海"}
+      }
+    ],
+    "finish_reason": "tool_calls"
+  },
+  "expectation": {
+    "outcome": "incompatible",
+    "issue_codes": ["finish_reason_mismatch", "missing_tool_call"],
+    "reference": "https://github.com/vllm-project/vllm/issues/31871"
+  }
+}
