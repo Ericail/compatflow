@@ -26,6 +26,44 @@ CompatFlow 的候选创新点不是再造一套 Schema 检查，而是：
 
 - [研究范围](docs/research-scope.md)
 - [相关工作与差异表](docs/related-work.md)
+- [轨迹格式 v1.0](docs/trace-format.md)
+
+## 当前实现：确定性 SSE 回放服务器
+
+仓库已经包含第一个可运行模块。它从 `corpus/canonical/*.json` 加载经过严格验证的轨迹，并提供 OpenAI-compatible 的流式端点。
+
+```bash
+uv sync --extra dev
+uv run compatflow-replay
+```
+
+另一个终端请求内置轨迹：
+
+```bash
+curl -N http://127.0.0.1:8000/v1/chat/completions \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "compatflow/single_tool_call",
+    "messages": [{"role": "user", "content": "上海天气如何？"}],
+    "stream": true
+  }'
+```
+
+也可以使用 `X-CompatFlow-Trace: single_tool_call` 请求头选择轨迹，这时 `model` 会被忽略。可用端点包括：
+
+- `GET /healthz`：服务和语料健康状态；
+- `GET /v1/models`：以 OpenAI 模型列表格式返回轨迹；
+- `GET /_compatflow/traces`：返回轨迹说明、事件数和 ground truth；
+- `POST /v1/chat/completions`：精确回放 SSE 事件。
+
+自定义语料目录可以通过 `COMPATFLOW_CORPUS_DIR` 指定，监听地址和端口分别由 `COMPATFLOW_HOST`、`COMPATFLOW_PORT` 控制。
+
+运行测试和静态检查：
+
+```bash
+uv run pytest
+uv run ruff check .
+```
 
 ## 两周可行性门槛
 
@@ -55,5 +93,4 @@ docs/            # 研究范围、相关工作和实验记录
 
 ## 开发环境
 
-项目计划使用 Python 3.12、FastAPI、httpx、pytest、Hypothesis 和 Pydantic。当前提交只冻结研究问题与仓库边界，下一步才实现回放服务器。
-
+项目使用 Python 3.12、FastAPI、httpx、pytest、Hypothesis 和 Pydantic。下一阶段将实现客户端适配器与语义归一化预言。
