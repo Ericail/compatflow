@@ -22,6 +22,7 @@ dependencies = [
 compatflow-check = "compatflow.cli:main"
 compatflow-generate = "compatflow.generator.cli:main"
 compatflow-matrix = "compatflow.matrix_cli:main"
+compatflow-reduce = "compatflow.reducer_cli:main"
 compatflow-replay = "compatflow.replay.server:main"
 
 [project.optional-dependencies]
