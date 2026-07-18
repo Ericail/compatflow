@@ -22,7 +22,10 @@ class MatrixCell(BaseModel):
     trace_id: str
     transformation: str
     chunks_seen: int = Field(ge=0)
-    passed: bool
+    semantic_passed: bool
+    expected_outcome: str
+    expected_issue_codes: list[str]
+    expectation_met: bool
     issue_codes: list[str]
 
 
@@ -34,8 +37,10 @@ class CompatibilityMatrix(BaseModel):
     adapter_count: int = Field(ge=1)
     trace_count: int = Field(ge=1)
     total: int = Field(ge=1)
-    passed: int = Field(ge=0)
-    failed: int = Field(ge=0)
+    semantic_passed: int = Field(ge=0)
+    semantic_failed: int = Field(ge=0)
+    expectations_met: int = Field(ge=0)
+    unexpected: int = Field(ge=0)
     cells: list[MatrixCell]
 
 
@@ -44,6 +49,9 @@ class _TraceCase:
     trace_id: str
     transformation: str
     ground_truth: GroundTruth
+    expected_outcome: str
+    expected_issue_codes: tuple[str, ...]
+    adapter_overrides: dict[str, tuple[str, tuple[str, ...]]]
 
 
 async def _fetch_cases(server_url: str) -> list[_TraceCase]:
@@ -61,6 +69,19 @@ async def _fetch_cases(server_url: str) -> list[_TraceCase]:
                 trace_id=trace["trace_id"],
                 transformation=transformation,
                 ground_truth=GroundTruth.model_validate(trace["ground_truth"]),
+                expected_outcome=trace.get("expectation", {}).get("outcome", "compatible"),
+                expected_issue_codes=tuple(
+                    trace.get("expectation", {}).get("issue_codes", [])
+                ),
+                adapter_overrides={
+                    name: (
+                        override.get("outcome", "compatible"),
+                        tuple(override.get("issue_codes", [])),
+                    )
+                    for name, override in trace.get("expectation", {})
+                    .get("adapter_overrides", {})
+                    .items()
+                },
             )
         )
     if not cases:
@@ -83,6 +104,17 @@ async def run_matrix(
         for case in cases:
             observed = await adapter.observe_url(server_url, case.trace_id)
             report = evaluate(observed, case.ground_truth)
+            actual_issue_codes = [issue.code for issue in report.issues]
+            expected_outcome, expected_issue_codes = case.adapter_overrides.get(
+                adapter_name,
+                (case.expected_outcome, case.expected_issue_codes),
+            )
+            if expected_outcome == "compatible":
+                expectation_met = report.passed
+            else:
+                expectation_met = not report.passed and set(expected_issue_codes).issubset(
+                    actual_issue_codes
+                )
             cells.append(
                 MatrixCell(
                     adapter=observed.adapter,
@@ -90,17 +122,22 @@ async def run_matrix(
                     trace_id=case.trace_id,
                     transformation=case.transformation,
                     chunks_seen=observed.chunks_seen,
-                    passed=report.passed,
-                    issue_codes=[issue.code for issue in report.issues],
+                    semantic_passed=report.passed,
+                    expected_outcome=expected_outcome,
+                    expected_issue_codes=list(expected_issue_codes),
+                    expectation_met=expectation_met,
+                    issue_codes=actual_issue_codes,
                 )
             )
-    passed = sum(cell.passed for cell in cells)
+    semantic_passed = sum(cell.semantic_passed for cell in cells)
+    expectations_met = sum(cell.expectation_met for cell in cells)
     return CompatibilityMatrix(
         adapter_count=len(adapter_names),
         trace_count=len(cases),
         total=len(cells),
-        passed=passed,
-        failed=len(cells) - passed,
+        semantic_passed=semantic_passed,
+        semantic_failed=len(cells) - semantic_passed,
+        expectations_met=expectations_met,
+        unexpected=len(cells) - expectations_met,
         cells=cells,
     )
-
