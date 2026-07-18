@@ -25,7 +25,7 @@ class TraceStore:
             raise FileNotFoundError(f"trace corpus directory does not exist: {corpus_dir}")
 
         traces: dict[str, Trace] = {}
-        for path in sorted(corpus_dir.glob("*.json")):
+        for path in sorted(corpus_dir.rglob("*.json")):
             with path.open(encoding="utf-8") as handle:
                 trace = Trace.model_validate(json.load(handle))
             if trace.trace_id in traces:
@@ -44,4 +44,3 @@ class TraceStore:
 
     def list(self) -> list[Trace]:
         return list(self._traces.values())
-
