@@ -29,6 +29,7 @@ CompatFlow 的候选创新点不是再造一套 Schema 检查，而是：
 - [轨迹格式 v1.0](docs/trace-format.md)
 - [语义 Oracle v0.1](docs/semantic-oracle.md)
 - [语义保持轨迹生成 v0.1](docs/trace-generation.md)
+- [双客户端兼容性矩阵 v0.1](docs/client-matrix.md)
 
 ## 当前实现：回放服务器、OpenAI SDK 适配器与语义 Oracle
 
@@ -58,6 +59,14 @@ uv run compatflow-check single_tool_call
 ```
 
 命令以 JSON 输出 `passed`、逐字段差异、SDK 版本、消费的 chunk 数以及重建后的工具调用。通过时退出码为 `0`，不兼容或 SDK 异常时退出码为 `1`，可直接接入 CI 和后续实验矩阵。
+
+用 OpenAI Python 和 LiteLLM 运行全部 14 条轨迹：
+
+```bash
+uv run compatflow-matrix
+```
+
+矩阵输出 28 个单元格的客户端版本、变换类别、chunk 数和 issue codes；任一单元格失败时退出码为 `1`。单条检查也可以用 `--adapter litellm` 切换客户端。
 
 从单工具和并行工具规范轨迹生成六类确定性变体：
 
@@ -112,4 +121,4 @@ docs/            # 研究范围、相关工作和实验记录
 
 ## 开发环境
 
-项目使用 Python 3.12、FastAPI、OpenAI Python、httpx、pytest、Hypothesis 和 Pydantic。下一阶段将接入第二个客户端适配器，并把同一 14 条轨迹形成首个横向兼容性矩阵。
+项目使用 Python 3.12、FastAPI、OpenAI Python、LiteLLM、httpx、pytest、Hypothesis 和 Pydantic。下一阶段将接入具有独立流解析路径的第三个客户端，并开始加入已知缺陷种子轨迹。
