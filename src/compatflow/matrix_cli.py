@@ -13,7 +13,7 @@ from compatflow.matrix import run_matrix
 async def _run(server_url: str, adapter_names: tuple[AdapterName, ...]) -> int:
     report = await run_matrix(server_url, adapter_names)
     print(report.model_dump_json(indent=2))
-    return 0 if report.failed == 0 else 1
+    return 0 if report.unexpected == 0 else 1
 
 
 def main() -> None:
@@ -33,4 +33,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
