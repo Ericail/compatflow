@@ -27,10 +27,11 @@ CompatFlow 的候选创新点不是再造一套 Schema 检查，而是：
 - [研究范围](docs/research-scope.md)
 - [相关工作与差异表](docs/related-work.md)
 - [轨迹格式 v1.0](docs/trace-format.md)
+- [语义 Oracle v0.1](docs/semantic-oracle.md)
 
-## 当前实现：确定性 SSE 回放服务器
+## 当前实现：回放服务器、OpenAI SDK 适配器与语义 Oracle
 
-仓库已经包含第一个可运行模块。它从 `corpus/canonical/*.json` 加载经过严格验证的轨迹，并提供 OpenAI-compatible 的流式端点。
+仓库从 `corpus/canonical/*.json` 加载经过严格验证的轨迹，提供 OpenAI-compatible 流式端点，并通过官方 OpenAI Python SDK 消费流。适配器把 SDK 输出归一化为与分片边界无关的观察结果，Oracle 再对照轨迹 ground truth 给出机器可读的通过/失败报告。
 
 ```bash
 uv sync --extra dev
@@ -48,6 +49,14 @@ curl -N http://127.0.0.1:8000/v1/chat/completions \
     "stream": true
   }'
 ```
+
+运行官方 OpenAI Python SDK 的端到端兼容性检查：
+
+```bash
+uv run compatflow-check single_tool_call
+```
+
+命令以 JSON 输出 `passed`、逐字段差异、SDK 版本、消费的 chunk 数以及重建后的工具调用。通过时退出码为 `0`，不兼容或 SDK 异常时退出码为 `1`，可直接接入 CI 和后续实验矩阵。
 
 也可以使用 `X-CompatFlow-Trace: single_tool_call` 请求头选择轨迹，这时 `model` 会被忽略。可用端点包括：
 
@@ -93,4 +102,4 @@ docs/            # 研究范围、相关工作和实验记录
 
 ## 开发环境
 
-项目使用 Python 3.12、FastAPI、httpx、pytest、Hypothesis 和 Pydantic。下一阶段将实现客户端适配器与语义归一化预言。
+项目使用 Python 3.12、FastAPI、OpenAI Python、httpx、pytest、Hypothesis 和 Pydantic。下一阶段将扩充并行工具调用与异常分片语料，然后接入第二个客户端适配器。
