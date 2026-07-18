@@ -21,7 +21,8 @@
       }
     ],
     "finish_reason": "tool_calls"
-  }
+  },
+  "provenance": null
 }
 ```
 
@@ -34,5 +35,6 @@
 - `event`、`event_id` 和 `retry_ms` 对应标准 SSE 字段；
 - JSON 使用 UTF-8 原样发送，不将非 ASCII 字符转义为 `\\uXXXX`。
 
-服务器启动时一次性验证整个目录。任何非法文件、重复 `trace_id` 或空语料目录都会阻止启动，避免实验过程中静默跳过坏样本。
+人工规范轨迹的 `provenance` 为 `null` 或省略。自动生成轨迹必须记录 `source_trace_id`、`transformation`、完整参数和 `generator_version`，使每个实验样本都能从规范轨迹重新生成。
 
+服务器启动时一次性验证整个目录。任何非法文件、重复 `trace_id` 或空语料目录都会阻止启动，避免实验过程中静默跳过坏样本。
