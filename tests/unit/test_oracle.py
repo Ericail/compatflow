@@ -18,6 +18,7 @@ def truth() -> GroundTruth:
 
 def observation(**overrides: object) -> ClientObservation:
     values = {
+        "trace_id": "test_trace",
         "adapter": "test-client",
         "adapter_version": "1.0",
         "chunks_seen": 3,
