@@ -28,6 +28,7 @@ CompatFlow 的候选创新点不是再造一套 Schema 检查，而是：
 - [相关工作与差异表](docs/related-work.md)
 - [轨迹格式 v1.0](docs/trace-format.md)
 - [语义 Oracle v0.1](docs/semantic-oracle.md)
+- [语义保持轨迹生成 v0.1](docs/trace-generation.md)
 
 ## 当前实现：回放服务器、OpenAI SDK 适配器与语义 Oracle
 
@@ -57,6 +58,15 @@ uv run compatflow-check single_tool_call
 ```
 
 命令以 JSON 输出 `passed`、逐字段差异、SDK 版本、消费的 chunk 数以及重建后的工具调用。通过时退出码为 `0`，不兼容或 SDK 异常时退出码为 `1`，可直接接入 CI 和后续实验矩阵。
+
+从单工具和并行工具规范轨迹生成六类确定性变体：
+
+```bash
+uv run compatflow-generate corpus/canonical/single_tool_call.json corpus/generated
+uv run compatflow-generate corpus/canonical/parallel_tool_calls.json corpus/generated
+```
+
+当前仓库包含 2 条人工规范轨迹和 12 条自动生成变体。生成器使用独立线级解码器自校验 ground truth，并由 Hypothesis 随机覆盖额外的参数切分边界。
 
 也可以使用 `X-CompatFlow-Trace: single_tool_call` 请求头选择轨迹，这时 `model` 会被忽略。可用端点包括：
 
@@ -102,4 +112,4 @@ docs/            # 研究范围、相关工作和实验记录
 
 ## 开发环境
 
-项目使用 Python 3.12、FastAPI、OpenAI Python、httpx、pytest、Hypothesis 和 Pydantic。下一阶段将扩充并行工具调用与异常分片语料，然后接入第二个客户端适配器。
+项目使用 Python 3.12、FastAPI、OpenAI Python、httpx、pytest、Hypothesis 和 Pydantic。下一阶段将接入第二个客户端适配器，并把同一 14 条轨迹形成首个横向兼容性矩阵。
