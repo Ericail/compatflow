@@ -114,19 +114,36 @@ def evaluate(observed: ClientObservation, expected: GroundTruth) -> OracleReport
     for index in sorted(expected_by_index.keys() & observed_by_index.keys()):
         truth = expected_by_index[index]
         actual = observed_by_index[index]
-        for field in ("call_id", "name"):
-            expected_value = getattr(truth, field)
-            observed_value = getattr(actual, field)
-            if expected_value != observed_value:
-                issues.append(
-                    OracleIssue(
-                        code=f"{field}_mismatch",
-                        path=f"tool_calls[{index}].{field}",
-                        message=f"tool call {field} differs from ground truth",
-                        expected=expected_value,
-                        observed=observed_value,
-                    )
+        if truth.call_id_policy == "exact" and truth.call_id != actual.call_id:
+            issues.append(
+                OracleIssue(
+                    code="call_id_mismatch",
+                    path=f"tool_calls[{index}].call_id",
+                    message="tool call call_id differs from ground truth",
+                    expected=truth.call_id,
+                    observed=actual.call_id,
                 )
+            )
+        elif truth.call_id_policy == "present" and not actual.call_id:
+            issues.append(
+                OracleIssue(
+                    code="call_id_missing",
+                    path=f"tool_calls[{index}].call_id",
+                    message="tool call must expose a non-empty call_id",
+                    expected="non-empty string",
+                    observed=actual.call_id,
+                )
+            )
+        if truth.name != actual.name:
+            issues.append(
+                OracleIssue(
+                    code="name_mismatch",
+                    path=f"tool_calls[{index}].name",
+                    message="tool call name differs from ground truth",
+                    expected=truth.name,
+                    observed=actual.name,
+                )
+            )
         if actual.parse_error is not None:
             issues.append(
                 OracleIssue(
