@@ -26,7 +26,9 @@ class _PartialToolCall:
         if delta.function is None:
             return
         if delta.function.name:
-            self.name_parts.append(delta.function.name)
+            current_name = "".join(self.name_parts)
+            if delta.function.name != current_name:
+                self.name_parts.append(delta.function.name)
         if delta.function.arguments is not None:
             self.argument_parts.append(delta.function.arguments)
 
@@ -84,6 +86,7 @@ class OpenAIPythonAdapter:
             )
 
         return ClientObservation(
+            trace_id=trace_id,
             adapter=self.name,
             adapter_version=version("openai"),
             chunks_seen=chunks_seen,
