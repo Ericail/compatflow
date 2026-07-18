@@ -22,7 +22,13 @@
     ],
     "finish_reason": "tool_calls"
   },
-  "provenance": null
+  "provenance": null,
+  "expectation": {
+    "outcome": "compatible",
+    "issue_codes": [],
+    "reference": null,
+    "adapter_overrides": {}
+  }
 }
 ```
 
@@ -34,6 +40,9 @@
 - `delay_ms` 表示发送该事件前的等待时间，最大 60 秒；
 - `event`、`event_id` 和 `retry_ms` 对应标准 SSE 字段；
 - JSON 使用 UTF-8 原样发送，不将非 ASCII 字符转义为 `\\uXXXX`。
+- `expectation.outcome` 为 `compatible` 时不得要求 issue code；为 `incompatible` 时至少要求一个；
+- `adapter_overrides` 可以记录某个客户端与默认预期不同的结果，用于固定跨客户端差异；
+- `reference` 只链接缺陷类别来源；它本身不证明该 JSON 是对应版本的原始网络抓包。
 
 人工规范轨迹的 `provenance` 为 `null` 或省略。自动生成轨迹必须记录 `source_trace_id`、`transformation`、完整参数和 `generator_version`，使每个实验样本都能从规范轨迹重新生成。
 
