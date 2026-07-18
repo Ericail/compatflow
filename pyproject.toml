@@ -12,6 +12,7 @@ license = { text = "Apache-2.0" }
 dependencies = [
   "fastapi>=0.115,<1",
   "httpx>=0.28,<1",
+  "litellm>=1.90.5,<2",
   "openai>=2.46,<3",
   "pydantic>=2.10,<3",
   "uvicorn[standard]>=0.32,<1",
@@ -20,6 +21,7 @@ dependencies = [
 [project.scripts]
 compatflow-check = "compatflow.cli:main"
 compatflow-generate = "compatflow.generator.cli:main"
+compatflow-matrix = "compatflow.matrix_cli:main"
 compatflow-replay = "compatflow.replay.server:main"
 
 [project.optional-dependencies]
