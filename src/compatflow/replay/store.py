@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from typing import Protocol
 from pathlib import Path
 
 from compatflow.replay.models import Trace
@@ -10,6 +11,14 @@ from compatflow.replay.models import Trace
 
 class TraceNotFoundError(KeyError):
     """Raised when a requested trace ID is not present in the corpus."""
+
+
+class TraceRepository(Protocol):
+    """Minimal trace source consumed by the replay application."""
+
+    def get(self, trace_id: str) -> Trace: ...
+
+    def list(self) -> list[Trace]: ...
 
 
 class TraceStore:
