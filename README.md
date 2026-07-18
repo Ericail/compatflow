@@ -32,6 +32,7 @@ CompatFlow 的候选创新点不是再造一套 Schema 检查，而是：
 - [三客户端兼容性矩阵 v0.2](docs/client-matrix.md)
 - [已知缺陷类别种子](docs/defect-seeds.md)
 - [失败缩减器](docs/failure-reduction.md)
+- [真实流记录与版本实验](docs/live-capture.md)
 
 ## 当前实现：生成、回放、跨客户端判定与失败缩减
 
@@ -89,6 +90,21 @@ uv run compatflow-reduce \
 ```
 
 缩减器支持三个适配器，输出原始/缩减事件数、尝试次数和失败签名。若轨迹在所选客户端上不失败，或输出已存在且未传 `--force`，命令会拒绝生成误导性结果。
+
+记录真实服务端的精确 SSE 字节并导入 Trace：
+
+```bash
+uv run compatflow-record MANIFEST.json results/raw/capture.json \
+  --trace-output results/traces/capture.json
+```
+
+仓库中的 `experiments/vllm_16340/` 固定了 vLLM `0.8.3` 与修复提交 `05a4324` 的 affected/fixed 请求、版本证据和预期线协议结果。只有在 GPU 主机上生成并归档真实 capture 后，才能把它称为版本复现。
+
+对同一份不可变 capture 离线运行三客户端矩阵：
+
+```bash
+uv run compatflow-evaluate-capture results/raw/capture.json
+```
 
 也可以使用 `X-CompatFlow-Trace: single_tool_call` 请求头选择轨迹，这时 `model` 会被忽略。可用端点包括：
 
