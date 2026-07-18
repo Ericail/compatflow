@@ -19,7 +19,7 @@ from compatflow.replay.store import TraceNotFoundError, TraceStore
 
 def _default_corpus_dir() -> Path:
     configured = os.getenv("COMPATFLOW_CORPUS_DIR")
-    return Path(configured) if configured else Path.cwd() / "corpus" / "canonical"
+    return Path(configured) if configured else Path.cwd() / "corpus"
 
 
 def _error(message: str, *, status_code: int, param: str | None = None) -> JSONResponse:
