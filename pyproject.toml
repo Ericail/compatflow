@@ -20,8 +20,10 @@ dependencies = [
 
 [project.scripts]
 compatflow-check = "compatflow.cli:main"
+compatflow-evaluate-capture = "compatflow.capture.evaluate_cli:main"
 compatflow-generate = "compatflow.generator.cli:main"
 compatflow-matrix = "compatflow.matrix_cli:main"
+compatflow-record = "compatflow.capture.cli:main"
 compatflow-reduce = "compatflow.reducer_cli:main"
 compatflow-replay = "compatflow.replay.server:main"
 
