@@ -8,7 +8,7 @@ from typing import Any
 
 import httpx
 
-from compatflow.adapters import OpenAIPythonAdapter
+from compatflow.adapters import ADAPTER_NAMES, AdapterName, get_adapter
 from compatflow.oracle import evaluate
 from compatflow.replay.models import GroundTruth
 
@@ -24,9 +24,9 @@ async def _fetch_ground_truth(server_url: str, trace_id: str) -> GroundTruth:
     raise ValueError(f"unknown trace: {trace_id}")
 
 
-async def _run(server_url: str, trace_id: str) -> int:
+async def _run(server_url: str, trace_id: str, adapter_name: AdapterName) -> int:
     expected = await _fetch_ground_truth(server_url, trace_id)
-    observed = await OpenAIPythonAdapter().observe_url(server_url, trace_id)
+    observed = await get_adapter(adapter_name).observe_url(server_url, trace_id)
     report = evaluate(observed, expected)
     print(report.model_dump_json(indent=2))
     return 0 if report.passed else 1
@@ -38,8 +38,14 @@ def main() -> None:
     )
     parser.add_argument("trace_id", help="trace identifier from /_compatflow/traces")
     parser.add_argument("--server", default="http://127.0.0.1:8000", help="replay server URL")
+    parser.add_argument(
+        "--adapter",
+        choices=ADAPTER_NAMES,
+        default="openai-python",
+        help="client SDK adapter",
+    )
     args = parser.parse_args()
-    raise SystemExit(asyncio.run(_run(args.server, args.trace_id)))
+    raise SystemExit(asyncio.run(_run(args.server, args.trace_id, args.adapter)))
 
 
 if __name__ == "__main__":
