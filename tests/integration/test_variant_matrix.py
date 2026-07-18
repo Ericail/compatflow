@@ -1,52 +1,63 @@
 import asyncio
+import socket
 from importlib.metadata import version
 from pathlib import Path
+from threading import Thread
+from time import monotonic, sleep
 
-import httpx
-from openai import AsyncOpenAI
+import pytest
+import uvicorn
 
-from compatflow.adapters import OpenAIPythonAdapter
-from compatflow.oracle import OracleReport, evaluate
+from compatflow.matrix import run_matrix
 from compatflow.replay.app import create_app
-from compatflow.replay.store import TraceStore
 
 
 CORPUS = Path(__file__).parents[2] / "corpus"
 
 
-async def run_matrix() -> list[OracleReport]:
-    store = TraceStore(CORPUS)
-    transport = httpx.ASGITransport(app=create_app(CORPUS))
-    http_client = httpx.AsyncClient(transport=transport, base_url="http://testserver")
-    client = AsyncOpenAI(
-        api_key="compatflow",
-        base_url="http://testserver/v1",
-        http_client=http_client,
+@pytest.fixture(scope="module")
+def replay_server_url():
+    listener = socket.socket()
+    listener.bind(("127.0.0.1", 0))
+    listener.listen()
+    port = listener.getsockname()[1]
+    server = uvicorn.Server(
+        uvicorn.Config(create_app(CORPUS), log_level="error", lifespan="off")
     )
-    adapter = OpenAIPythonAdapter()
-    reports = []
-    try:
-        for trace in store.list():
-            observed = await adapter.observe(client, trace.trace_id)
-            reports.append(evaluate(observed, trace.ground_truth))
-    finally:
-        await client.close()
-    return reports
+    thread = Thread(target=server.run, kwargs={"sockets": [listener]}, daemon=True)
+    thread.start()
+    deadline = monotonic() + 5
+    while not server.started and monotonic() < deadline:
+        sleep(0.01)
+    if not server.started:
+        server.should_exit = True
+        thread.join(timeout=2)
+        pytest.fail("replay server did not start")
+    yield f"http://127.0.0.1:{port}"
+    server.should_exit = True
+    thread.join(timeout=5)
+    listener.close()
 
 
-def test_openai_python_passes_generated_variant_matrix() -> None:
-    reports = asyncio.run(run_matrix())
+def test_two_client_variant_matrix(replay_server_url: str) -> None:
+    report = asyncio.run(run_matrix(replay_server_url, ("openai-python", "litellm")))
 
-    assert len(reports) == 14
-    assert {report.observed.adapter_version for report in reports} == {version("openai")}
-    assert {
-        report.observed.tool_calls[0].name for report in reports
-    } == {"get_weather"}
-    assert [
-        {
-            "trace_id": report.observed.trace_id,
-            "issues": report.issues,
-        }
-        for report in reports
-        if not report.passed
-    ] == []
+    assert report.adapter_count == 2
+    assert report.trace_count == 14
+    assert report.total == 28
+    assert report.passed == 28
+    assert report.failed == 0
+    assert {cell.adapter_version for cell in report.cells if cell.adapter == "openai-python"} == {
+        version("openai")
+    }
+    assert {cell.adapter_version for cell in report.cells if cell.adapter == "litellm"} == {
+        version("litellm")
+    }
+    chunk_counts = {
+        (cell.adapter, cell.trace_id): cell.chunks_seen
+        for cell in report.cells
+    }
+    assert chunk_counts[("openai-python", "parallel_tool_calls__empty_deltas")] == 22
+    assert chunk_counts[("litellm", "parallel_tool_calls__empty_deltas")] == 12
+    assert chunk_counts[("openai-python", "single_tool_call__empty_deltas")] == 8
+    assert chunk_counts[("litellm", "single_tool_call__empty_deltas")] == 5
