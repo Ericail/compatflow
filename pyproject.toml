@@ -19,6 +19,7 @@ dependencies = [
 
 [project.scripts]
 compatflow-check = "compatflow.cli:main"
+compatflow-generate = "compatflow.generator.cli:main"
 compatflow-replay = "compatflow.replay.server:main"
 
 [project.optional-dependencies]
