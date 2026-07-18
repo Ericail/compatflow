@@ -60,6 +60,30 @@ class TraceProvenance(BaseModel):
     generator_version: Literal["0.1"] = "0.1"
 
 
+class ExpectedResult(BaseModel):
+    """One default or adapter-specific expected oracle result."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    outcome: Literal["compatible", "incompatible"] = "compatible"
+    issue_codes: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def validate_issue_codes(self) -> ExpectedResult:
+        if self.outcome == "compatible" and self.issue_codes:
+            raise ValueError("compatible traces cannot require issue codes")
+        if self.outcome == "incompatible" and not self.issue_codes:
+            raise ValueError("incompatible traces must require at least one issue code")
+        return self
+
+
+class TraceExpectation(ExpectedResult):
+    """Expected result, with optional client-specific compatibility overrides."""
+
+    reference: str | None = None
+    adapter_overrides: dict[str, ExpectedResult] = Field(default_factory=dict)
+
+
 class Trace(BaseModel):
     """A replayable wire trace paired with a semantic oracle."""
 
@@ -71,6 +95,7 @@ class Trace(BaseModel):
     events: list[TraceEvent] = Field(min_length=1)
     ground_truth: GroundTruth
     provenance: TraceProvenance | None = None
+    expectation: TraceExpectation = Field(default_factory=TraceExpectation)
 
     @model_validator(mode="after")
     def done_is_terminal(self) -> Trace:
