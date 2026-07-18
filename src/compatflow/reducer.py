@@ -3,20 +3,14 @@
 from __future__ import annotations
 
 import math
-import socket
-from collections.abc import Awaitable, Callable, Iterator
-from contextlib import contextmanager
-from threading import Lock, Thread
-from time import monotonic, sleep
+from collections.abc import Awaitable, Callable
 
-import uvicorn
 from pydantic import BaseModel, ConfigDict, Field
 
 from compatflow.adapters import AdapterName, get_adapter
 from compatflow.oracle import evaluate
-from compatflow.replay.app import create_app
+from compatflow.replay.ephemeral import replay_server
 from compatflow.replay.models import Trace
-from compatflow.replay.store import TraceNotFoundError
 
 
 FailurePredicate = Callable[[Trace], Awaitable[bool]]
@@ -33,57 +27,6 @@ class ReductionResult(BaseModel):
     reduced_event_count: int = Field(ge=1)
     attempts: int = Field(ge=0)
     trace: Trace
-
-
-class _TraceSlot:
-    """Thread-safe single-trace repository used only during reduction."""
-
-    def __init__(self, trace: Trace) -> None:
-        self._trace = trace
-        self._lock = Lock()
-
-    def replace(self, trace: Trace) -> None:
-        with self._lock:
-            self._trace = trace
-
-    def get(self, trace_id: str) -> Trace:
-        with self._lock:
-            trace = self._trace
-        if trace.trace_id != trace_id:
-            raise TraceNotFoundError(trace_id)
-        return trace
-
-    def list(self) -> list[Trace]:
-        with self._lock:
-            return [self._trace]
-
-
-@contextmanager
-def _replay_server(trace: Trace) -> Iterator[tuple[str, _TraceSlot]]:
-    listener = socket.socket()
-    listener.bind(("127.0.0.1", 0))
-    listener.listen()
-    port = listener.getsockname()[1]
-    slot = _TraceSlot(trace)
-    server = uvicorn.Server(
-        uvicorn.Config(create_app(store=slot), log_level="error", lifespan="off")
-    )
-    thread = Thread(target=server.run, kwargs={"sockets": [listener]}, daemon=True)
-    thread.start()
-    deadline = monotonic() + 5
-    while not server.started and monotonic() < deadline:
-        sleep(0.01)
-    if not server.started:
-        server.should_exit = True
-        thread.join(timeout=2)
-        listener.close()
-        raise RuntimeError("temporary replay server did not start")
-    try:
-        yield f"http://127.0.0.1:{port}", slot
-    finally:
-        server.should_exit = True
-        thread.join(timeout=5)
-        listener.close()
 
 
 async def minimize_events(trace: Trace, predicate: FailurePredicate) -> tuple[Trace, int]:
@@ -117,7 +60,7 @@ async def reduce_trace(trace: Trace, adapter_name: AdapterName) -> ReductionResu
     """Reduce a trace while preserving every oracle issue and its observed value."""
 
     adapter = get_adapter(adapter_name)
-    with _replay_server(trace) as (server_url, slot):
+    with replay_server(trace) as (server_url, slot):
         initial = evaluate(
             await adapter.observe_url(server_url, trace.trace_id),
             trace.ground_truth,
