@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0",
+  "trace_id": "single_tool_call",
+  "description": "A single weather tool call whose UTF-8 JSON arguments span two chunks.",
+  "events": [
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-001",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/single_tool_call",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "id": "call_weather_001",
+                  "type": "function",
+                  "function": {
+                    "name": "get_weather",
+                    "arguments": ""
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-001",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/single_tool_call",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "{\"city\":"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-001",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/single_tool_call",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "\"上海\"}"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-001",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/single_tool_call",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {},
+            "finish_reason": "tool_calls"
+          }
+        ]
+      }
+    },
+    {
+      "data": "[DONE]"
+    }
+  ],
+  "ground_truth": {
+    "tool_calls": [
+      {
+        "index": 0,
+        "call_id": "call_weather_001",
+        "name": "get_weather",
+        "arguments": {
+          "city": "上海"
+        }
+      }
+    ],
+    "finish_reason": "tool_calls"
+  }
+}
+
