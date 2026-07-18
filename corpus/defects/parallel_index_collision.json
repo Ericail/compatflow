@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "trace_id": "defect_parallel_index_collision",
+  "description": "Known SGLang-class seed: two parallel calls reuse tool-call index zero.",
+  "events": [
+    {
+      "data": {
+        "id": "chatcmpl-defect-004",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/defect_parallel_index_collision",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "id": "call_weather_004",
+                  "type": "function",
+                  "function": {"name": "get_weather", "arguments": "{\"city\":\"上海\"}"}
+                },
+                {
+                  "index": 0,
+                  "id": "call_time_004",
+                  "type": "function",
+                  "function": {"name": "get_time", "arguments": "{\"timezone\":\"Asia/Tokyo\"}"}
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "id": "chatcmpl-defect-004",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/defect_parallel_index_collision",
+        "choices": [{"index": 0, "delta": {}, "finish_reason": "tool_calls"}]
+      }
+    },
+    {"data": "[DONE]"}
+  ],
+  "ground_truth": {
+    "tool_calls": [
+      {
+        "index": 0,
+        "call_id": "call_weather_004",
+        "name": "get_weather",
+        "arguments": {"city": "上海"}
+      },
+      {
+        "index": 1,
+        "call_id": "call_time_004",
+        "name": "get_time",
+        "arguments": {"timezone": "Asia/Tokyo"}
+      }
+    ],
+    "finish_reason": "tool_calls"
+  },
+  "expectation": {
+    "outcome": "incompatible",
+    "issue_codes": ["missing_tool_call"],
+    "reference": "https://github.com/sgl-project/sglang/issues/25073"
+  }
+}
