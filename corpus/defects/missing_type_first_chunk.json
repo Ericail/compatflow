@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "trace_id": "defect_missing_type_first_chunk",
+  "description": "Known vLLM-class seed: the first tool-call delta omits type=function.",
+  "events": [
+    {
+      "data": {
+        "id": "chatcmpl-defect-001",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/defect_missing_type_first_chunk",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "id": "call_defect_001",
+                  "function": {"name": "get_weather", "arguments": "{\"city\":\"上海\"}"}
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "id": "chatcmpl-defect-001",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/defect_missing_type_first_chunk",
+        "choices": [{"index": 0, "delta": {}, "finish_reason": "tool_calls"}]
+      }
+    },
+    {"data": "[DONE]"}
+  ],
+  "ground_truth": {
+    "tool_calls": [
+      {
+        "index": 0,
+        "call_id": "call_defect_001",
+        "name": "get_weather",
+        "arguments": {"city": "上海"}
+      }
+    ],
+    "finish_reason": "tool_calls"
+  },
+  "expectation": {
+    "outcome": "compatible",
+    "issue_codes": [],
+    "reference": "https://github.com/vllm-project/vllm/issues/16340"
+  }
+}
