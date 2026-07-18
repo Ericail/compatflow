@@ -16,9 +16,12 @@ def client() -> TestClient:
 def test_health_and_models_catalog() -> None:
     api = client()
 
-    assert api.get("/healthz").json()["traces"] == 1
+    assert api.get("/healthz").json()["traces"] == 2
     models = api.get("/v1/models").json()
-    assert models["data"][0]["id"] == "compatflow/single_tool_call"
+    assert {model["id"] for model in models["data"]} == {
+        "compatflow/parallel_tool_calls",
+        "compatflow/single_tool_call",
+    }
 
 
 def test_replays_exact_stream_and_reconstructs_arguments() -> None:
@@ -68,4 +71,3 @@ def test_rejects_non_streaming_and_unknown_trace() -> None:
         json={"model": "compatflow/missing", "stream": True},
     )
     assert unknown.status_code == 404
-
