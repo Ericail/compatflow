@@ -88,6 +88,9 @@ def create_app(corpus_dir: Path | None = None) -> FastAPI:
                     "description": trace.description,
                     "event_count": len(trace.events),
                     "ground_truth": trace.ground_truth.model_dump(),
+                    "provenance": (
+                        trace.provenance.model_dump() if trace.provenance is not None else None
+                    ),
                 }
                 for trace in store.list()
             ]
