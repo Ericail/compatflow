@@ -37,6 +37,7 @@
 - `trace_id` 只能包含小写字母、数字、下划线和连字符；
 - 必须存在且只能存在一个 `[DONE]`，并且它必须是最后一个事件；
 - ground truth 中的工具 `index` 和 `call_id` 必须唯一；
+- `call_id_policy=exact` 比较固定 ID，`present` 只要求非空 ID，`ignore` 不比较 ID；真实服务端生成随机 ID 时应使用 `present`，不能填伪造常量；
 - `delay_ms` 表示发送该事件前的等待时间，最大 60 秒；
 - `event`、`event_id` 和 `retry_ms` 对应标准 SSE 字段；
 - JSON 使用 UTF-8 原样发送，不将非 ASCII 字符转义为 `\\uXXXX`。
@@ -45,5 +46,7 @@
 - `reference` 只链接缺陷类别来源；它本身不证明该 JSON 是对应版本的原始网络抓包。
 
 人工规范轨迹的 `provenance` 为 `null` 或省略。自动生成轨迹必须记录 `source_trace_id`、`transformation`、完整参数和 `generator_version`，使每个实验样本都能从规范轨迹重新生成。
+
+真实抓包轨迹使用 capture provenance，至少记录 experiment/capture ID、服务端实现与版本、source ref 或镜像、端点、模型、时间以及请求和响应 SHA-256。完整原始字节与 HTTP 分块时间保存在 capture artifact 中；Trace 是可回放导入物，不替代原始证据。
 
 服务器启动时一次性验证整个目录。任何非法文件、重复 `trace_id` 或空语料目录都会阻止启动，避免实验过程中静默跳过坏样本。
