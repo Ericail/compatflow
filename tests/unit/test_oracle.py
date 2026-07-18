@@ -96,3 +96,30 @@ def test_reports_invalid_json_and_duplicate_indexes() -> None:
         "duplicate_tool_call_index",
         "invalid_arguments_json",
     }
+
+
+def test_call_id_presence_policy_accepts_any_non_empty_identifier() -> None:
+    expected = GroundTruth(
+        tool_calls=[
+            ToolCallTruth(
+                index=0,
+                call_id_policy="present",
+                name="get_weather",
+                arguments={"city": "上海"},
+            )
+        ]
+    )
+
+    assert evaluate(observation(), expected).passed
+    missing = observation(
+        tool_calls=[
+            ObservedToolCall(
+                index=0,
+                call_id=None,
+                name="get_weather",
+                arguments={"city": "上海"},
+                raw_arguments='{"city":"上海"}',
+            )
+        ]
+    )
+    assert [issue.code for issue in evaluate(missing, expected).issues] == ["call_id_missing"]
