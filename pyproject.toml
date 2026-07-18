@@ -11,16 +11,18 @@ requires-python = ">=3.12"
 license = { text = "Apache-2.0" }
 dependencies = [
   "fastapi>=0.115,<1",
+  "httpx>=0.28,<1",
+  "openai>=2.46,<3",
   "pydantic>=2.10,<3",
   "uvicorn[standard]>=0.32,<1",
 ]
 
 [project.scripts]
+compatflow-check = "compatflow.cli:main"
 compatflow-replay = "compatflow.replay.server:main"
 
 [project.optional-dependencies]
 dev = [
-  "httpx>=0.28,<1",
   "hypothesis>=6.120,<7",
   "pytest>=8.0",
   "ruff>=0.6",
