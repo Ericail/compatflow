@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "trace_id": "defect_missing_tool_call_index",
+  "description": "Synthetic differential seed: a streamed tool call omits its index.",
+  "events": [
+    {
+      "data": {
+        "id": "chatcmpl-defect-002",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/defect_missing_tool_call_index",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "id": "call_defect_002",
+                  "type": "function",
+                  "function": {"name": "get_weather", "arguments": "{\"city\":\"上海\"}"}
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "id": "chatcmpl-defect-002",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/defect_missing_tool_call_index",
+        "choices": [{"index": 0, "delta": {}, "finish_reason": "tool_calls"}]
+      }
+    },
+    {"data": "[DONE]"}
+  ],
+  "ground_truth": {
+    "tool_calls": [
+      {
+        "index": 0,
+        "call_id": "call_defect_002",
+        "name": "get_weather",
+        "arguments": {"city": "上海"}
+      }
+    ],
+    "finish_reason": "tool_calls"
+  },
+  "expectation": {
+    "outcome": "incompatible",
+    "issue_codes": ["adapter_failure"],
+    "adapter_overrides": {
+      "litellm": {"outcome": "compatible", "issue_codes": []}
+    }
+  }
+}
