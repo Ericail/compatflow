@@ -29,9 +29,11 @@ CompatFlow 的候选创新点不是再造一套 Schema 检查，而是：
 - [轨迹格式 v1.0](docs/trace-format.md)
 - [语义 Oracle v0.1](docs/semantic-oracle.md)
 - [语义保持轨迹生成 v0.1](docs/trace-generation.md)
-- [双客户端兼容性矩阵 v0.1](docs/client-matrix.md)
+- [三客户端兼容性矩阵 v0.2](docs/client-matrix.md)
+- [已知缺陷类别种子](docs/defect-seeds.md)
+- [失败缩减器](docs/failure-reduction.md)
 
-## 当前实现：回放服务器、OpenAI SDK 适配器与语义 Oracle
+## 当前实现：生成、回放、跨客户端判定与失败缩减
 
 仓库从 `corpus/canonical/*.json` 加载经过严格验证的轨迹，提供 OpenAI-compatible 流式端点，并通过官方 OpenAI Python SDK 消费流。适配器把 SDK 输出归一化为与分片边界无关的观察结果，Oracle 再对照轨迹 ground truth 给出机器可读的通过/失败报告。
 
@@ -60,13 +62,13 @@ uv run compatflow-check single_tool_call
 
 命令以 JSON 输出 `passed`、逐字段差异、SDK 版本、消费的 chunk 数以及重建后的工具调用。通过时退出码为 `0`，不兼容或 SDK 异常时退出码为 `1`，可直接接入 CI 和后续实验矩阵。
 
-用 OpenAI Python 和 LiteLLM 运行全部 14 条轨迹：
+用 OpenAI Python、LiteLLM 和 OpenAI Node 运行全部 18 条轨迹：
 
 ```bash
 uv run compatflow-matrix
 ```
 
-矩阵输出 28 个单元格的客户端版本、变换类别、chunk 数和 issue codes；任一单元格失败时退出码为 `1`。单条检查也可以用 `--adapter litellm` 切换客户端。
+矩阵输出 54 个单元格的客户端版本、变换类别、chunk 数、实际 issue codes 和预期结果。已知负向轨迹按预期失败不会让命令失败；只有出现非预期通过或非预期失败时退出码才为 `1`。单条检查也可以用 `--adapter litellm` 或 `--adapter openai-node` 切换客户端。
 
 从单工具和并行工具规范轨迹生成六类确定性变体：
 
@@ -75,7 +77,18 @@ uv run compatflow-generate corpus/canonical/single_tool_call.json corpus/generat
 uv run compatflow-generate corpus/canonical/parallel_tool_calls.json corpus/generated
 ```
 
-当前仓库包含 2 条人工规范轨迹和 12 条自动生成变体。生成器使用独立线级解码器自校验 ground truth，并由 Hypothesis 随机覆盖额外的参数切分边界。
+当前仓库包含 2 条人工规范轨迹、12 条自动生成变体和 4 条缺陷类别种子。生成器使用独立线级解码器自校验 ground truth，并由 Hypothesis 随机覆盖额外的参数切分边界。
+
+将一个失败轨迹缩减为保持完整 Oracle 报告的 1-minimal 事件序列：
+
+```bash
+uv run compatflow-reduce \
+  corpus/defects/raw_tool_call_content.json \
+  /tmp/raw_tool_call_content.min.json \
+  --adapter openai-python
+```
+
+缩减器支持三个适配器，输出原始/缩减事件数、尝试次数和失败签名。若轨迹在所选客户端上不失败，或输出已存在且未传 `--force`，命令会拒绝生成误导性结果。
 
 也可以使用 `X-CompatFlow-Trace: single_tool_call` 请求头选择轨迹，这时 `model` 会被忽略。可用端点包括：
 
@@ -98,7 +111,7 @@ uv run ruff check .
 两周 MVP 依次完成：
 
 - 可精确回放 SSE 的 Mock Server；
-- OpenAI Python、LiteLLM、LangChain 三个客户端适配器；
+- OpenAI Python、LiteLLM、OpenAI Node 三个客户端适配器；
 - 至少 20 条手工轨迹和 6 类语义保持变换；
 - 基于 ground truth 的语义预言；
 - 一个基础失败缩减器；
@@ -110,15 +123,16 @@ uv run ruff check .
 
 ```text
 src/compatflow/
-  adapters/      # 客户端 SDK 适配器
-  replay/        # SSE 回放与真实流记录
+  adapters/      # 三个客户端 SDK 适配器
+  node_client/   # 独立 Node SDK 观察进程
+  replay/        # SSE 回放
   generator/     # 轨迹生成及语义保持变换
-  oracle/        # 协议与语义预言
-  reducer/       # 最小失败用例缩减
+  oracle.py      # 语义预言
+  reducer.py     # 失败保持的 ddmin 缩减
 tests/           # 单元测试、已知缺陷和生成式测试
 docs/            # 研究范围、相关工作和实验记录
 ```
 
 ## 开发环境
 
-项目使用 Python 3.12、FastAPI、OpenAI Python、LiteLLM、httpx、pytest、Hypothesis 和 Pydantic。下一阶段将接入具有独立流解析路径的第三个客户端，并开始加入已知缺陷种子轨迹。
+项目使用 Python 3.12、Node.js、FastAPI、OpenAI Python、OpenAI Node、LiteLLM、httpx、pytest、Hypothesis 和 Pydantic。当前固定基线为 46/54 个单元格语义通过、8/54 个按预期失败、54/54 个预期吻合。下一阶段接入真实 vLLM/SGLang 版本并做纵向版本实验。
