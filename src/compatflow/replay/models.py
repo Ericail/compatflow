@@ -13,9 +13,18 @@ class ToolCallTruth(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     index: int = Field(ge=0)
-    call_id: str = Field(min_length=1)
+    call_id: str | None = None
+    call_id_policy: Literal["exact", "present", "ignore"] = "exact"
     name: str = Field(min_length=1)
     arguments: dict[str, Any]
+
+    @model_validator(mode="after")
+    def validate_call_id_policy(self) -> ToolCallTruth:
+        if self.call_id_policy == "exact" and not self.call_id:
+            raise ValueError("exact call_id policy requires a non-empty call_id")
+        if self.call_id is not None and not self.call_id:
+            raise ValueError("call_id cannot be empty")
+        return self
 
 
 class GroundTruth(BaseModel):
@@ -29,7 +38,11 @@ class GroundTruth(BaseModel):
     @model_validator(mode="after")
     def unique_tool_calls(self) -> GroundTruth:
         indexes = [call.index for call in self.tool_calls]
-        call_ids = [call.call_id for call in self.tool_calls]
+        call_ids = [
+            call.call_id
+            for call in self.tool_calls
+            if call.call_id_policy == "exact" and call.call_id is not None
+        ]
         if len(indexes) != len(set(indexes)):
             raise ValueError("ground-truth tool-call indexes must be unique")
         if len(call_ids) != len(set(call_ids)):
@@ -58,6 +71,25 @@ class TraceProvenance(BaseModel):
     transformation: str = Field(pattern=r"^[a-z0-9][a-z0-9_]*$")
     parameters: dict[str, Any]
     generator_version: Literal["0.1"] = "0.1"
+
+
+class CaptureProvenance(BaseModel):
+    """Auditable origin metadata for a trace imported from a live server."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    capture_id: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]*$")
+    experiment_id: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]*$")
+    transformation: Literal["captured"] = "captured"
+    server_implementation: str = Field(min_length=1)
+    server_version: str = Field(min_length=1)
+    server_source_ref: str | None = None
+    server_image: str | None = None
+    endpoint: str = Field(min_length=1)
+    model: str = Field(min_length=1)
+    captured_at: str = Field(min_length=1)
+    request_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    response_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
 
 
 class ExpectedResult(BaseModel):
@@ -94,7 +126,7 @@ class Trace(BaseModel):
     description: str = Field(min_length=1)
     events: list[TraceEvent] = Field(min_length=1)
     ground_truth: GroundTruth
-    provenance: TraceProvenance | None = None
+    provenance: TraceProvenance | CaptureProvenance | None = None
     expectation: TraceExpectation = Field(default_factory=TraceExpectation)
 
     @model_validator(mode="after")
