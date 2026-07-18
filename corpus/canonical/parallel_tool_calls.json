@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0",
+  "trace_id": "parallel_tool_calls",
+  "description": "Two tool calls whose JSON arguments are interleaved by tool-call index.",
+  "events": [
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-002",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "role": "assistant",
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "id": "call_weather_002",
+                  "type": "function",
+                  "function": {"name": "get_weather", "arguments": "{\"city\":"}
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-002",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "id": "call_time_002",
+                  "type": "function",
+                  "function": {"name": "get_time", "arguments": "{\"timezone\":"}
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-002",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {"tool_calls": [{"index": 0, "function": {"arguments": "\"上海\"}"}}]},
+            "finish_reason": null
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-002",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [{"index": 1, "function": {"arguments": "\"Asia/Tokyo\"}"}}]
+            },
+            "finish_reason": null
+          }
+        ]
+      }
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-002",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls",
+        "choices": [{"index": 0, "delta": {}, "finish_reason": "tool_calls"}]
+      }
+    },
+    {"data": "[DONE]"}
+  ],
+  "ground_truth": {
+    "tool_calls": [
+      {
+        "index": 0,
+        "call_id": "call_weather_002",
+        "name": "get_weather",
+        "arguments": {"city": "上海"}
+      },
+      {
+        "index": 1,
+        "call_id": "call_time_002",
+        "name": "get_time",
+        "arguments": {"timezone": "Asia/Tokyo"}
+      }
+    ],
+    "finish_reason": "tool_calls"
+  }
+}
