@@ -49,6 +49,17 @@ class TraceEvent(BaseModel):
     retry_ms: int | None = Field(default=None, ge=0)
 
 
+class TraceProvenance(BaseModel):
+    """Reproducible origin metadata for a generated trace."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    source_trace_id: str = Field(pattern=r"^[a-z0-9][a-z0-9_-]*$")
+    transformation: str = Field(pattern=r"^[a-z0-9][a-z0-9_]*$")
+    parameters: dict[str, Any]
+    generator_version: Literal["0.1"] = "0.1"
+
+
 class Trace(BaseModel):
     """A replayable wire trace paired with a semantic oracle."""
 
@@ -59,6 +70,7 @@ class Trace(BaseModel):
     description: str = Field(min_length=1)
     events: list[TraceEvent] = Field(min_length=1)
     ground_truth: GroundTruth
+    provenance: TraceProvenance | None = None
 
     @model_validator(mode="after")
     def done_is_terminal(self) -> Trace:
@@ -66,4 +78,3 @@ class Trace(BaseModel):
         if done_positions != [len(self.events) - 1]:
             raise ValueError("a trace must contain exactly one terminal [DONE] event")
         return self
-
