@@ -1,0 +1,1017 @@
+{
+  "schema_version": "1.0",
+  "trace_id": "parallel_tool_calls__character_arguments",
+  "description": "Two tool calls whose JSON arguments are interleaved by tool-call index. Variant: character_arguments.",
+  "events": [
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "{",
+                    "name": "get_weather"
+                  },
+                  "id": "call_weather_002",
+                  "type": "function"
+                }
+              ],
+              "role": "assistant"
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "\""
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "c"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "i"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "t"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "y"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "\""
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": ":"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "\""
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "上"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "海"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "\""
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 0,
+                  "function": {
+                    "arguments": "}"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "{",
+                    "name": "get_time"
+                  },
+                  "id": "call_time_002",
+                  "type": "function"
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "\""
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "t"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "i"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "m"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "e"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "z"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "o"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "n"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "e"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "\""
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": ":"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "\""
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "A"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "s"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "i"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "a"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "/"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "T"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "o"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "k"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "y"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "o"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "\""
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {
+              "tool_calls": [
+                {
+                  "index": 1,
+                  "function": {
+                    "arguments": "}"
+                  }
+                }
+              ]
+            },
+            "finish_reason": null
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": {
+        "id": "chatcmpl-compatflow-parallel_tool_calls__character_arguments",
+        "object": "chat.completion.chunk",
+        "created": 0,
+        "model": "compatflow/parallel_tool_calls__character_arguments",
+        "choices": [
+          {
+            "index": 0,
+            "delta": {},
+            "finish_reason": "tool_calls"
+          }
+        ]
+      },
+      "delay_ms": 0
+    },
+    {
+      "data": "[DONE]",
+      "delay_ms": 0
+    }
+  ],
+  "ground_truth": {
+    "tool_calls": [
+      {
+        "index": 0,
+        "call_id": "call_weather_002",
+        "name": "get_weather",
+        "arguments": {
+          "city": "上海"
+        }
+      },
+      {
+        "index": 1,
+        "call_id": "call_time_002",
+        "name": "get_time",
+        "arguments": {
+          "timezone": "Asia/Tokyo"
+        }
+      }
+    ],
+    "finish_reason": "tool_calls"
+  },
+  "provenance": {
+    "source_trace_id": "parallel_tool_calls",
+    "transformation": "character_arguments",
+    "parameters": {
+      "name": "character_arguments",
+      "fragment_size": 1,
+      "empty_between": false,
+      "continuation_metadata": "minimal",
+      "schedule": "sequential"
+    },
+    "generator_version": "0.1"
+  }
+}
