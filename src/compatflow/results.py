@@ -35,10 +35,10 @@ class ClientObservation(BaseModel):
 
     model_config = ConfigDict(extra="forbid")
 
+    trace_id: str
     adapter: str
     adapter_version: str
     chunks_seen: int = Field(ge=0)
     finish_reason: str | None
     tool_calls: list[ObservedToolCall]
     failure: AdapterFailure | None = None
-
